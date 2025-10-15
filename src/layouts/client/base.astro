@@ -1,0 +1,14 @@
+---
+import "@/styles/frontend/frontend.css";
+import Layout from "@/layouts/global.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props as Props;
+---
+
+<Layout title={title}>
+  <slot />
+</Layout>

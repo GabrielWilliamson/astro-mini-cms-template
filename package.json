@@ -1,0 +1,29 @@
+{
+    "name": "astro-mini-cms-template",
+    "author": "Gabriel Williamson",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev --remote",
+        "build": "astro check & astro build --remote",
+        "preview": "astro preview",
+        "astro": "astro",
+        "db:push": "astro db push --remote",
+        "manage": "astro db execute ./src/scripts/manage.ts --remote",
+        "seed": "astro db execute ./src/scripts/seed.ts --remote"
+    },
+    "dependencies": {
+        "@astrojs/db": "0.18.0",
+        "@astrojs/vercel": "8.0.4",
+        "@libsql/client": "0.15.15",
+        "@tailwindcss/vite": "4.1.14",
+        "astro": "5.14.5",
+        "bcryptjs": "3.0.2",
+        "drizzle-orm": "0.42.0",
+        "tailwindcss": "4.1.14",
+        "vite": "6.3.6"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "2.4.6"
+    }
+}

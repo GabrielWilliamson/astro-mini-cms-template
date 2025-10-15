@@ -1,0 +1,37 @@
+---
+import { db } from "astro:db";
+
+import { getCollectionBySlug } from "@/collections";
+import { getSourceBySlug } from "@/collections";
+
+import Layout from "@/layouts/admin/dashboard.astro";
+import DataTable from "@/components/admin/datatable.astro";
+
+const { collection } = Astro.params;
+const config = getCollectionBySlug(collection!);
+const source = getSourceBySlug(collection!);
+const records = await db.select().from(source!);
+---
+
+<Layout>
+  <header class="flex justify-between">
+    <h1 class="text-foreground font-semibold text-2xl">{config.label}</h1>
+    <a href={`/admin/collections/${collection}/create`} class="btn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 4.5v15m7.5-7.5h-15"></path>
+      </svg>
+      New
+    </a>
+  </header>
+  <DataTable collection={config} data={records} collectionSlug={collection!} />
+</Layout>

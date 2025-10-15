@@ -1,0 +1,25 @@
+---
+// src/components/admin/displayfields/relation.astro
+interface Props {
+  value: string | undefined | null;
+  resolvedData?: {
+    id: string;
+    label: string;
+    [key: string]: any;
+  } | null;
+}
+
+const { value, resolvedData } = Astro.props;
+---
+
+<div class="inline-flex items-center gap-2">
+  {
+    resolvedData ? (
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/50 border border-border rounded-md text-foreground text-sm font-medium">
+        <span>{resolvedData.label}</span>
+      </span>
+    ) : (
+      <span class="text-muted-foreground text-sm italic">{value || "—"}</span>
+    )
+  }
+</div>

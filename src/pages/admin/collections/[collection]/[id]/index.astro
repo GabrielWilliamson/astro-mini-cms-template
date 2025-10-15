@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/admin/dashboard.astro";
+import BackTo from "@/components/admin/ui/back_to.astro";
+
+interface Props {
+  collection?: string;
+  id?: string;
+}
+
+const { collection, id } = Astro.params as Props;
+
+if (!collection || !id) {
+  return Astro.redirect("/admin");
+}
+---
+
+<Layout>
+  <div>
+    <BackTo href={`/admin/collections/${collection}`} text={collection} />
+    <h1 class="text-foreground text-xl">Collection: {collection}</h1>
+    <h2 class="text-foreground">Id: {id}</h2>
+  </div>
+</Layout>

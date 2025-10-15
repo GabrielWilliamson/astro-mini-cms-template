@@ -1,0 +1,31 @@
+---
+// src/components/admin/fields/text.astro
+interface Props {
+  name: string;
+  label?: string;
+  value?: string;
+  required?: boolean;
+  placeholder?: string;
+}
+
+const { name, label, value = "", required = false, placeholder } = Astro.props;
+const displayLabel = label || name.charAt(0).toUpperCase() + name.slice(1);
+---
+
+<div class="mb-4">
+  <label for={name} class="label mb-2">
+    {displayLabel}
+    {required && <span class="text-red-500">*</span>}
+  </label>
+  <input
+    type="text"
+    id={name}
+    name={name}
+    value={value}
+    required={required}
+    placeholder={placeholder}
+    class="input"
+  />
+</div>
+
+

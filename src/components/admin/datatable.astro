@@ -1,0 +1,133 @@
+---
+// src/components/admin/datatable.astro
+import type { Collection } from "@/types/collections";
+import FieldDisplay from "@/components/admin/displayfields/index.astro";
+import CollectionEmpty from "./collection-empty.astro";
+import { resolveRelations } from "@/lib/relation-resolver";
+
+interface Props {
+  collection: Collection<any>;
+  data: Array<Record<string, any>>;
+  collectionSlug: string;
+}
+
+const { collection, data, collectionSlug } = Astro.props;
+
+const resolvedData = await resolveRelations(data, collection);
+
+const displayFields = collection.fieldMap.filter(
+  (field) => field.field !== "description" && field.field !== "id"
+);
+---
+
+<table class="table">
+  <thead>
+    <tr>
+      {
+        displayFields.map((field) => (
+          <th class="text-foreground/40">{field.label || field.field}</th>
+        ))
+      }
+      <th class="text-foreground/40">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      resolvedData.length === 0 ? (
+        <tr>
+          <td colspan={displayFields.length + 1} class="">
+            <CollectionEmpty />
+          </td>
+        </tr>
+      ) : (
+        resolvedData.map((row) => (
+          <tr>
+            {displayFields.map((field) => {
+              const fieldValue = row[field.field];
+              const resolvedValue = row[`_resolved_${field.field}`];
+
+              return (
+                <td>
+                  <FieldDisplay
+                    type={field.fieldComponent}
+                    value={
+                      typeof fieldValue === "object"
+                        ? String(fieldValue)
+                        : fieldValue
+                    }
+                    field={field.field}
+                    resolvedData={resolvedValue ?? null}
+                  />
+                </td>
+              );
+            })}
+            <td class="text-foreground">
+              <div class="flex gap-2">
+                <a
+                  href={`/admin/collections/${collectionSlug}/${row.id}/`}
+                  class="btn-sm-icon-outline"
+                  title="View Details"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href={`/admin/collections/${collectionSlug}/${row.id}/edit`}
+                  class="btn-sm-icon-outline"
+                  title="Edit"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                  </svg>
+                </a>
+                <button
+                  class="btn-sm-icon-destructive"
+                  data-id={row.id}
+                  title="Delete"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))
+      )
+    }
+  </tbody>
+</table>

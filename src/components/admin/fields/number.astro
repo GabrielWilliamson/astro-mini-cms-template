@@ -1,0 +1,45 @@
+---
+// src/components/admin/fields/number.astro
+interface Props {
+  name: string;
+  label?: string;
+  value?: number | string;
+  required?: boolean;
+  placeholder?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+const {
+  name,
+  label,
+  value = "",
+  required = false,
+  placeholder,
+  min,
+  max,
+  step = "0.01",
+} = Astro.props;
+
+const displayLabel = label || name.charAt(0).toUpperCase() + name.slice(1);
+---
+
+<div class="mb-4">
+  <label for={name} class="label mb-2">
+    {displayLabel}
+    {required && <span class="text-red-500">*</span>}
+  </label>
+  <input
+    type="number"
+    id={name}
+    name={name}
+    value={value}
+    required={required}
+    placeholder={placeholder}
+    min={min}
+    max={max}
+    step={step}
+    class="input"
+  />
+</div>

@@ -1,0 +1,28 @@
+---
+interface Props {
+  name: string;
+  label?: string;
+  value?: string;
+  required?: boolean;
+  placeholder?: string;
+  rows?: number;
+}
+
+const { name, label, value = "", required = false, placeholder, rows = 4 } = Astro.props;
+const displayLabel = label || name.charAt(0).toUpperCase() + name.slice(1);
+---
+
+<div class="mb-4">
+  <label for={name} class="label mb-2">
+    {displayLabel}
+    {required && <span class="text-red-500">*</span>}
+  </label>
+  <textarea
+    id={name}
+    name={name}
+    required={required}
+    rows={rows}
+    placeholder={placeholder}
+    class="textarea"
+  >{value}</textarea>
+</div>

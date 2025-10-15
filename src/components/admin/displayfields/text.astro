@@ -1,0 +1,12 @@
+---
+// src/components/admin/displayfields/text.astro
+interface Props {
+  value: string | undefined | null;
+}
+
+const { value } = Astro.props;
+---
+
+<p class="text-foreground text-sm">
+  {value || <span class="text-muted-foreground italic">—</span>}
+</p>

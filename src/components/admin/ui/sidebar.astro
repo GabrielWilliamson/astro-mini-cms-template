@@ -1,0 +1,256 @@
+---
+import type { BaseCollection } from "@/types/collections";
+
+interface Props {
+  collectionsList: BaseCollection[];
+}
+
+const { collectionsList } = Astro.props;
+---
+
+<aside id="main-sidebar" class="sidebar" data-side="left" aria-hidden="false">
+  <nav aria-label="Sidebar navigation">
+    <section class="scrollbar">
+      <div role="group" aria-labelledby="group-label-dashboard">
+        <h3 id="group-label-dashboard">Dashboard</h3>
+        <ul>
+          <li>
+            <a href="/admin">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+              </svg>
+              <span>Overview</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div role="separator" class="border-t my-2"></div>
+
+      <div role="group" aria-labelledby="group-label-collections">
+        <h3 id="group-label-collections">Collections</h3>
+        <ul>
+          {
+            collectionsList.map((collection) => (
+              <li>
+                <a href={`/admin/collections/${collection.slug}`}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+                  </svg>
+                  <span>{collection.label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div role="separator" class="border-t my-2"></div>
+
+      <div role="group" aria-labelledby="group-label-settings">
+        <h3 id="group-label-settings">Configuration</h3>
+        <ul>
+          <li>
+            <details id="submenu-settings">
+              <summary aria-controls="submenu-settings-content">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+                  ></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Settings
+              </summary>
+              <ul id="submenu-settings-content">
+                <li>
+                  <a href="/admin/settings/general">
+                    <span>General</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/settings/team">
+                    <span>Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/settings/billing">
+                    <span></span>
+                  </a>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
+
+      <div role="separator" class="border-t my-2"></div>
+
+      <div role="group" aria-labelledby="group-label-logout">
+        <h3 id="group-label-logout">Profile</h3>
+        <ul>
+          <li>
+            <a href="#" id="logout-link">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                ></path>
+              </svg>
+
+              <span>Close Session</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </nav>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      const initSidebar = (sidebarComponent) => {
+        const initialOpen = sidebarComponent.dataset.initialOpen !== "false";
+        const initialMobileOpen =
+          sidebarComponent.dataset.initialMobileOpen === "true";
+        const breakpoint = parseInt(sidebarComponent.dataset.breakpoint) || 768;
+
+        let open =
+          breakpoint > 0
+            ? window.innerWidth >= breakpoint
+              ? initialOpen
+              : initialMobileOpen
+            : initialOpen;
+
+        const updateCurrentPageLinks = () => {
+          const currentPath = window.location.pathname.replace(/\/$/, "");
+          sidebarComponent.querySelectorAll("a").forEach((link) => {
+            if (link.hasAttribute("data-ignore-current")) return;
+
+            const linkPath = new URL(link.href).pathname.replace(/\/$/, "");
+            if (linkPath === currentPath) {
+              link.setAttribute("aria-current", "page");
+            } else {
+              link.removeAttribute("aria-current");
+            }
+          });
+        };
+
+        const updateState = () => {
+          sidebarComponent.setAttribute("aria-hidden", !open);
+          if (open) {
+            sidebarComponent.removeAttribute("inert");
+          } else {
+            sidebarComponent.setAttribute("inert", "");
+          }
+        };
+
+        const setState = (state) => {
+          open = state;
+          updateState();
+        };
+
+        const sidebarId = sidebarComponent.id;
+
+        document.addEventListener("basecoat:sidebar", (event) => {
+          if (event.detail?.id && event.detail.id !== sidebarId) return;
+
+          switch (event.detail?.action) {
+            case "open":
+              setState(true);
+              break;
+            case "close":
+              setState(false);
+              break;
+            default:
+              setState(!open);
+              break;
+          }
+        });
+
+        sidebarComponent.addEventListener("click", (event) => {
+          const target = event.target;
+          const nav = sidebarComponent.querySelector("nav");
+
+          const isMobile = window.innerWidth < breakpoint;
+
+          if (
+            isMobile &&
+            target.closest("a, button") &&
+            !target.closest("[data-keep-mobile-sidebar-open]")
+          ) {
+            if (document.activeElement) document.activeElement.blur();
+            setState(false);
+            return;
+          }
+
+          if (target === sidebarComponent || (nav && !nav.contains(target))) {
+            if (document.activeElement) document.activeElement.blur();
+            setState(false);
+          }
+        });
+
+        window.addEventListener("popstate", updateCurrentPageLinks);
+        window.addEventListener(
+          "basecoat:locationchange",
+          updateCurrentPageLinks
+        );
+
+        updateState();
+        updateCurrentPageLinks();
+        sidebarComponent.dataset.sidebarInitialized = true;
+        sidebarComponent.dispatchEvent(new CustomEvent("basecoat:initialized"));
+      };
+
+      document
+        .querySelectorAll(".sidebar:not([data-sidebar-initialized])")
+        .forEach((el) => initSidebar(el));
+
+      document
+        .getElementById("logout-link")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+          await fetch("/api/logout", { method: "POST" });
+        });
+    });
+  </script>
+</aside>

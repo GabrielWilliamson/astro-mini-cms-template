@@ -1,0 +1,91 @@
+---
+// src/layouts/admin/dashboard.astro
+import "@/styles/admin/dashboard-layout.css";
+
+import Layout from "@/layouts/global.astro";
+import { collections } from "@/collections";
+import Sidebar from "@/components/admin/ui/sidebar.astro";
+import Button from "@/components/admin/ui/button.astro";
+import type { BaseCollection } from "@/types/collections";
+import ThemeTogle from "@/components/admin/ui/theme_togle.astro";
+
+const collectionsList: BaseCollection[] = Object.entries(collections).map(
+  ([key, value]) => ({
+    ...value,
+    slug: key,
+  })
+);
+---
+
+<Layout title="Dashboard">
+  <Sidebar collectionsList={collectionsList} />
+  <div
+    id="main-content"
+    class="min-h-screen transition-[margin] ease-in-out duration-300 md:ml-64"
+  >
+    <main class="w-full bg-background">
+      <div class="min-h-screen">
+        <div
+          class="border-border border-b p-2 flex justify-between items-center text-foreground"
+        >
+          <Button id="sidebar-toogle" class="btn-sm-icon-ghost">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect width="18" height="18" x="3" y="3" rx="2"></rect><path
+                d="M9 3v18"></path></svg
+            >
+          </Button>
+
+          <ThemeTogle />
+        </div>
+        <div class="p-4">
+          <slot />
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script is:inline>
+    const sidebarToggle = document.getElementById("sidebar-toogle");
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener("click", () => {
+        document.dispatchEvent(
+          new CustomEvent("basecoat:sidebar", {
+            detail: { id: "main-sidebar", action: "toggle" },
+          })
+        );
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebar = document.getElementById("main-sidebar");
+      const mainContent = document.getElementById("main-content");
+
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === "aria-hidden") {
+            const isHidden = sidebar.getAttribute("aria-hidden") === "true";
+
+            if (window.innerWidth >= 768) {
+              if (isHidden) {
+                mainContent.style.marginLeft = "0";
+              } else {
+                mainContent.style.marginLeft = "16rem";
+              }
+            }
+          }
+        });
+      });
+
+      observer.observe(sidebar, { attributes: true });
+    });
+  </script>
+</Layout>

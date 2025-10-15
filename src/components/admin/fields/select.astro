@@ -1,0 +1,46 @@
+---
+// src/components/admin/fields/select.astro
+interface Props {
+  name: string;
+  label?: string;
+  value?: string;
+  required?: boolean;
+  placeholder?: string;
+  options: Array<{ value: string; label: string }>;
+}
+
+const {
+  name,
+  label,
+  value = "",
+  required = false,
+  placeholder = "Select an option",
+  options = [],
+} = Astro.props;
+
+const displayLabel = label || name.charAt(0).toUpperCase() + name.slice(1);
+---
+
+<div class="mb-4">
+  <label for={name} class="label mb-2">
+    {displayLabel}
+    {required && <span class="text-red-500">*</span>}
+  </label>
+  <select
+    id={name}
+    name={name}
+    required={required}
+    class="select w-[200px]"
+  >
+    <!-- <option value="" disabled selected={!value}>
+      {placeholder}
+    </option> -->
+    {
+      options.map((option) => (
+        <option value={option.value} selected={value === option.value}>
+          {option.label}
+        </option>
+      ))
+    }
+  </select>
+</div>

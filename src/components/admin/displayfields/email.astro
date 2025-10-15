@@ -1,0 +1,36 @@
+---
+// src/components/admin/displayfields/email.astro
+interface Props {
+  value: string | undefined | null;
+}
+
+const { value } = Astro.props;
+---
+
+<div class="inline-block max-w-full">
+  {value ? (
+    <a
+      href={`mailto:${value}`}
+      class="inline-flex items-center gap-2 px-3 py-1.5 border dark:border-blue-800 rounded-md  no-underline text-sm font-medium transition-all text-blue-400 dark:text-blue-800"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="flex-shrink-0"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+      <span class="">{value}</span>
+    </a>
+  ) : (
+    <span class="text-muted-foreground italic">—</span>
+  )}
+</div>

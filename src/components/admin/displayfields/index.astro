@@ -1,0 +1,22 @@
+---
+// src/components/admin/displayfields/index.astro
+import type { FieldDisplayProps } from "@/types/fields";
+import TextField from "./text.astro";
+import TextareaField from "./textarea.astro";
+import EmailField from "./email.astro";
+import UrlField from "./url.astro";
+import RelationField from "./relation.astro";
+
+interface Props extends FieldDisplayProps {
+  resolvedData?: any;
+}
+
+const { type, value, field, resolvedData } = Astro.props;
+---
+
+{type === "text-field" && <TextField value={value} />}
+{type === "textarea-field" && <TextareaField value={value} />}
+{type === "email-field" && <EmailField value={value} />}
+{type === "url-field" && <UrlField value={value} />}
+{type === "number-field" && <TextField value={value} />}
+{type === "select-field" && <RelationField value={value} resolvedData={resolvedData} />}

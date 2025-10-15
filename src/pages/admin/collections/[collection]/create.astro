@@ -1,0 +1,192 @@
+---
+// pages/admin/collections/[collection]/create.astro
+import Layout from "@/layouts/admin/dashboard.astro";
+import BackTo from "@/components/admin/ui/back_to.astro";
+
+import TextField from "@/components/admin/fields/text.astro";
+import TextareaField from "@/components/admin/fields/textarea.astro";
+import EmailField from "@/components/admin/fields/email.astro";
+import UrlField from "@/components/admin/fields/url.astro";
+import NumberField from "@/components/admin/fields/number.astro";
+import SelectField from "@/components/admin/fields/select.astro";
+
+import { collections, getSourceBySlug } from "@/collections";
+import { db } from "astro:db";
+import { getRelationOptions } from "@/lib/relations";
+
+
+if (!Astro.locals.user) {
+  return Astro.redirect("/auth/login");
+}
+
+const user = Astro.locals.user;
+const { collection } = Astro.params as { collection?: string };
+
+if (!collection) {
+  return Astro.redirect("/admin");
+}
+
+const config = collections[collection as keyof typeof collections];
+
+if (!config) {
+  return Astro.redirect("/admin");
+}
+
+let errors: any[] | null = null;
+
+const relationOptions: Record<
+  string,
+  Array<{ value: string; label: string }>
+> = {};
+
+for (const fieldEntry of config.fieldMap) {
+  if (fieldEntry.fieldComponent === "select-field") {
+    const {
+      collection: relCollection,
+      labelField,
+      valueField,
+    } = fieldEntry.relation;
+    relationOptions[fieldEntry.field] = await getRelationOptions(
+      relCollection,
+      labelField,
+      valueField
+    );
+  }
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const data: Record<string, any> = {};
+
+    for (const [key, value] of formData.entries()) {
+      data[key] = value || undefined;
+    }
+
+    const validationResult = config.schema.safeParse(data);
+
+    if (!validationResult.success) {
+      errors = validationResult.error.issues;
+    } else {
+      const source = getSourceBySlug(collection);
+
+      if (!source) {
+        throw new Error("Database source not found");
+      }
+
+      const result = validationResult.data;
+      result.id = crypto.randomUUID();
+
+      await db.insert(source).values(result as any);
+
+      return Astro.redirect(`/admin/collections/${collection}`);
+    }
+  } catch (error) {
+    console.error("Error creating record:", error);
+
+    // Detectar errores de FOREIGN KEY
+    if (
+      error instanceof Error &&
+      error.message.includes("FOREIGN KEY constraint failed")
+    ) {
+      errors = [
+        {
+          path: ["general"],
+          message:
+            "Invalid reference: Please select valid options for all relationship fields.",
+        },
+      ];
+    } else {
+      errors = [
+        { path: ["general"], message: "Server error. Please try again." },
+      ];
+    }
+  }
+}
+---
+
+<Layout>
+  <div class="max-w-4xl mx-auto p-6">
+    <div class="mb-6">
+      <BackTo href={`/admin/collections/${collection}`} text={config.label} />
+    </div>
+
+    <h1 class="text-3xl font-bold mb-6 text-foreground">
+      Create {config.label}
+    </h1>
+
+    {
+      errors && errors.length > 0 && (
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded">
+          <h3 class="font-semibold text-red-800 mb-2">Validation Errors:</h3>
+          <ul class="list-disc list-inside text-red-700 text-sm">
+            {errors.map((error) => (
+              <li>
+                {error.path.join(".")}: {error.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <form method="POST" class="space-y-4">
+      {
+        config.fieldMap.map((fieldEntry) => {
+          const { field, fieldComponent, required, label } = fieldEntry;
+          const fieldLabel = label || field;
+
+          // Omitir el campo ID ya que se genera automáticamente
+          if (field === "id") {
+            return null;
+          }
+
+          // Props base para todos los campos
+          const baseProps = {
+            name: field as string,
+            label: fieldLabel,
+            required: required,
+            placeholder: "",
+          };
+
+          // Renderizar según el tipo de campo
+          switch (fieldComponent) {
+            case "text-field":
+              return <TextField {...baseProps} />;
+
+            case "textarea-field":
+              return <TextareaField {...baseProps} />;
+
+            case "email-field":
+              return <EmailField {...baseProps} />;
+
+            case "url-field":
+              return <UrlField {...baseProps} />;
+
+            case "number-field":
+              return <NumberField {...baseProps} />;
+
+            case "select-field":
+              return (
+                <SelectField
+                  {...baseProps}
+                  options={relationOptions[field] || []}
+                />
+              );
+
+            default:
+              console.warn(`Unknown field component: ${fieldComponent}`);
+              return null;
+          }
+        })
+      }
+
+      <div class="flex gap-4 pt-4">
+        <button type="submit" class="btn">
+          Create {config.label}
+        </button>
+        <a href={`/admin/collections/${collection}`} class="btn"> Cancel </a>
+      </div>
+    </form>
+  </div>
+</Layout>
