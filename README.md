@@ -13,6 +13,10 @@ This template was inspired by PayloadCMS, I must also give credit to StudioCMS, 
 
 ## Demo
 
+[demo](https://kropress.vercel.app/admin/)
+Email: `juan@demo.com`
+Password: `juan`
+
 ![demo](public/demo.png)
 ![demo](public/demo1.png)
 ![demo](public/demo2.png)
