@@ -250,6 +250,7 @@ const { collectionsList } = Astro.props;
         .addEventListener("click", async (e) => {
           e.preventDefault();
           await fetch("/api/logout", { method: "POST" });
+          window.location.href = "/auth/login";
         });
     });
   </script>
